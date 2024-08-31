@@ -2,7 +2,7 @@ class Voucher {
   Voucher(
       {required this.id,
       required this.status,
-      required this.choiceDate,
+        this.choiceDate,
       required this.choiceDate1,
       required this.choiceDate2,
       required this.choiceDate3,
@@ -17,7 +17,8 @@ class Voucher {
       required this.isChecked});
 
   int id, status;
-  String choiceDate, choiceDate1, choiceDate2, choiceDate3;
+  String? choiceDate;
+  String   choiceDate1, choiceDate2, choiceDate3;
   String emailId,
       issueDate,
       issuedBy,

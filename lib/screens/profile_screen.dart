@@ -15,10 +15,10 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  late List listProfileData;
-  late int userId;
+   List listProfileData = [];
+   int? userId;
 
-  void getProfileData() async {
+  Future<void> getProfileData() async {
     var endPointUrl = "https://fcclub.co.in/api/Myprofileapi/MyProfileGet";
     //print(userId.toString());
     Map<String, String> queryParamete = {
@@ -36,6 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (response.statusCode == 200) {
       setState(() {
         listProfileData = json.decode(response.body);
+
       });
     } else {
       Fluttertoast.showToast(
@@ -61,10 +62,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
           'Profile Details',
-          style: TextStyle(color: Colors.white, fontSize: 16),
+          style: TextStyle(color: Colors.white, fontSize: 18,fontWeight: FontWeight.w600),
         ),
       ),
-      body: listProfileData == null
+      body: listProfileData.isEmpty
           ? Center(
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
@@ -540,9 +541,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void getUserId() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
-      userId = sharedPreferences.getInt("userId")!;
+      userId = sharedPreferences.getInt("Id");
       print("profile${userId}");
     });
-    getProfileData();
+    if (userId != null) {
+      await getProfileData(); // Call after userId is set
+    }
+
   }
 }

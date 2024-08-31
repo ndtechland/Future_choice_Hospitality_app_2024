@@ -12,7 +12,7 @@ class GalleryScreen extends StatefulWidget {
 }
 
 class _GalleryScreenState extends State<GalleryScreen> {
-  late List _listImages;
+   List _listImages=[];
 
   Future getGalleryImages() async {
     http.Response response = await http
@@ -36,12 +36,13 @@ class _GalleryScreenState extends State<GalleryScreen> {
       appBar: AppBar(
         backgroundColor: primaryColor,
         iconTheme: IconThemeData(color: Colors.white),
+        centerTitle: true,
         title: Text(
           'Gallery',
-          style: TextStyle(color: Colors.white, fontSize: 16),
+          style: TextStyle(color: Colors.white, fontSize: 18,fontWeight: FontWeight.w600),
         ),
       ),
-      body: _listImages == null
+      body: _listImages.isEmpty
           ? Center(
               child: CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
@@ -55,7 +56,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
                     alignment: Alignment.center,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Colors.blue,
+                     // color: Colors.blue,
                       borderRadius: BorderRadius.circular(5),
                     ),
                     // decoration: ,

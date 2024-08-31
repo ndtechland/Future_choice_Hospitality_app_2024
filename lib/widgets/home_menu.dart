@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../screens/available_resorts.dart';
 import '../screens/book_holiday_screen.dart';
@@ -93,7 +94,13 @@ class HomeMenu extends StatelessWidget {
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, '/vacations');
+                        checkUserID().then((userId) => {
+                          userId
+                             , Navigator.pushNamed(context, '/vacations')
+                          // Navigator.popAndPushNamed(
+                          //             context, '/login_screen')
+                        });
+
                       },
                       child: Container(
                         margin: EdgeInsets.all(10),
@@ -222,4 +229,10 @@ class HomeMenu extends StatelessWidget {
       ),
     );
   }
+
+}
+Future<int> checkUserID() async {
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  int userId = sharedPreferences.getInt("Id") ?? 0;
+  return userId;
 }

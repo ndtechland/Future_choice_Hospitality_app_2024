@@ -103,7 +103,9 @@ class _MemberLoginPageState extends State<MemberLoginPage> {
                                       ? Navigator.popAndPushNamed(
                                           context, '/home_screen')
                                       : Navigator.popAndPushNamed(
-                                          context, '/login_screen')
+                                          context, '/phone_screen')
+                              // Navigator.popAndPushNamed(
+                              //             context, '/login_screen')
                                 });
                           },
                           child: Align(

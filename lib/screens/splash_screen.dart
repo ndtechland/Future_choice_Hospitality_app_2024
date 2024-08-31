@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fch_club_new24/screens/otp_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
       DeviceOrientation.portraitDown,
     ]);
     Timer(Duration(seconds: 2), () {
+      //Navigator.push(context, MaterialPageRoute(builder: (context)=>OtpVerifyScreen()));
       Navigator.popAndPushNamed(context, '/memberlogin_screen');
 
       // checkLoginStatus().then((isLoggedIn) => {

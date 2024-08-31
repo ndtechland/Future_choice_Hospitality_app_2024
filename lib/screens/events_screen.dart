@@ -21,13 +21,13 @@ class _EventsScreenState extends State<EventsScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.blueAccent.shade700,
+      //backgroundColor: Colors.blueAccent.shade700,
       appBar: AppBar(
         elevation: 2,
         backgroundColor: primaryColor,
         title: Text(
           'Events',
-          style: TextStyle(color: Colors.white, fontSize: size.height * 0.03),
+          style: TextStyle(color: Colors.white, fontSize: size.height * 0.03,fontWeight: FontWeight.w600),
         ),
         iconTheme: IconThemeData(color: Colors.white),
       ),

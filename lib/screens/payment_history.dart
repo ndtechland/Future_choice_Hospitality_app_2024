@@ -15,8 +15,8 @@ class PaymentHistory extends StatefulWidget {
 }
 
 class _PaymentHistoryState extends State<PaymentHistory> {
-  late int userId;
-  late List dataFinal;
+   int? userId;
+   List dataFinal=[];
   bool isLoading = true;
 
   void getPaymentHistory() async {
@@ -39,21 +39,21 @@ class _PaymentHistoryState extends State<PaymentHistory> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+     // backgroundColor: Colors.blue,
       appBar: AppBar(
         backgroundColor: primaryColor,
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
           'Payment History',
-          style: TextStyle(color: Colors.white, fontSize: 16),
+          style: TextStyle(color: Colors.white, fontSize: 18,fontWeight: FontWeight.w600),
         ),
       ),
-      body: dataFinal == null
+      body: dataFinal.isEmpty
           ? Center(
               child: CircularProgressIndicator(),
             )
           : Container(
-              color: Colors.blue.shade900,
+              //color: Colors.blue.shade900,
               width: double.infinity,
               height: double.infinity,
               child: Card(
@@ -183,7 +183,8 @@ class _PaymentHistoryState extends State<PaymentHistory> {
   void getUserId() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
-      userId = sharedPreferences.getInt("userId")!;
+      userId = sharedPreferences.getInt("Id")!;
+      print("iddd:$userId");
     });
 
     getPaymentHistory();

@@ -12,7 +12,7 @@ class BirthdayScreen extends StatefulWidget {
 }
 
 class _BirthdayScreenState extends State<BirthdayScreen> {
-  late List _listImages;
+   List _listImages=[];
   Future getBirthDayImages() async {
     http.Response response = await http.get(
       Uri.parse('https://fcclub.co.in/api/Birthdayeventapi/BirthdayEvent'),
@@ -47,7 +47,7 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
           backgroundColor: primaryColor,
           title: Text(
             'Birthdays',
-            style: TextStyle(color: Colors.white, fontSize: 16),
+            style: TextStyle(color: Colors.white, fontSize: 18,fontWeight: FontWeight.w600),
           ),
           iconTheme: IconThemeData(color: Colors.white),
         ),

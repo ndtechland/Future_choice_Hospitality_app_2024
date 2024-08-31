@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -20,54 +21,39 @@ class _BookHolidayState extends State<BookHoliday> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   bool _isLoading = false;
   late int userId;
-  // String locationId = "224";
 
-  ///item['DesinationName'],
+  List locationList = []; // Initialize with an empty list
+  String? selectedLocation; // Allow null values
 
-  late List locationList;
-  late String selectedLocation;
-
-  //List<LocationModel> locationIdd = <LocationModel>[];
-
-  /// LocationModel ? _locationModel
-
-  late List hotelList;
-  late String selectedHotel;
+  // List hotelList = []; // Initialize with an empty list
+  // String? selectedHotel; // Allow null values
 
   DateTime selectedDate = DateTime.now();
+  DateTime checkOutDate = DateTime.now();
   TextEditingController _textNoOfNightsController = TextEditingController();
   TextEditingController _textNoOfAdultsController = TextEditingController();
   TextEditingController _textNoOfChildController = TextEditingController();
   TextEditingController _textMembershipIdController = TextEditingController();
-
-  //String Id;
+  TextEditingController _textPhoneController = TextEditingController();
+  TextEditingController _textEmailController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     getUserId();
-    //getLocationId();
     getLocations();
-
-    /// getHotel();
-    selectedHotel;
-    locationList;
-    hotelList;
-    // selectedLocation.listen((p0) {
-    //   if (p0 != null) {
-    //     getCityByStateID("${p0.id}");
-    //   }
-    // });
-    //print(selectedLocation);
   }
 
-  ///todo: kumar prince.. location...13 feb 2024..
   Future getLocations() async {
     http.Response response = await http
         .get(Uri.parse("https://fcclub.co.in/api/BookHoliday/AllCity"));
     if (response.statusCode == 200) {
       setState(() {
         locationList = json.decode(response.body);
+        // Set default value for selectedLocation if locationList is not empty
+        if (locationList.isNotEmpty) {
+          selectedLocation = locationList[0]['DesinationName'];
+        }
       });
     } else {
       Fluttertoast.showToast(
@@ -78,30 +64,28 @@ class _BookHolidayState extends State<BookHoliday> {
     }
   }
 
-  ///todo: kumar prince.. location...13 feb 2024..
-  // Modify getHotel method to accept locationId as a parameter
-  Future getHotel(String locationId) async {
-    http.Response response = await http.get(Uri.parse(
-            "https://fcclub.co.in/api/BookHoliday/GetPlaceByLocationId?LocationId=$locationId")
-
-        //"https://fcclub.co.in/api/BookHoliday/GetPlaceByLocationId?LocationId=$locationId"
-        );
-    print("okowss${locationId}");
-    if (response.statusCode == 200) {
-      print("okow${locationId}");
-      setState(() {
-        hotelList = json.decode(response.body);
-      });
-    } else {
-      Fluttertoast.showToast(
-          msg: "Something went wrong",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1);
-    }
-  }
-
-  ///
+  // Future getHotel(String locationId) async {
+  //   var url =
+  //       'https://fcclub.co.in/api/BookHoliday/GetPlaceByLocationId?LocationId=$locationId';
+  //   http.Response response = await http.get(Uri.parse(url));
+  //   if (response.statusCode == 200) {
+  //     setState(() {
+  //       hotelList = json.decode(response.body);
+  //       print("url:${url}");
+  //       print("hotelList:${hotelList}");
+  //       // Set default value for selectedHotel if hotelList is not empty
+  //       if (hotelList.isNotEmpty) {
+  //         selectedHotel = hotelList[0]['PlaceName'];
+  //       }
+  //     });
+  //   } else {
+  //     Fluttertoast.showToast(
+  //         msg: "Something went wrong",
+  //         toastLength: Toast.LENGTH_SHORT,
+  //         gravity: ToastGravity.BOTTOM,
+  //         timeInSecForIosWeb: 1);
+  //   }
+  // }
 
   _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -116,11 +100,24 @@ class _BookHolidayState extends State<BookHoliday> {
       });
   }
 
+  _checkOutDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now().subtract(Duration(days: 1)),
+      lastDate: DateTime(2050),
+    );
+    if (picked != null && picked != checkOutDate)
+      setState(() {
+        checkOutDate = picked;
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: locationList == null
+      body: locationList.isEmpty // Check if locationList is empty
           ? Center(
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
@@ -128,7 +125,6 @@ class _BookHolidayState extends State<BookHoliday> {
             )
           : SafeArea(
               child: Container(
-                // backgroundColor: primaryColor,
                 color: primaryColor,
                 width: double.infinity,
                 child: SingleChildScrollView(
@@ -165,26 +161,12 @@ class _BookHolidayState extends State<BookHoliday> {
                                     color: Colors.white,
                                     size: size.height * 0.02,
                                   ),
-                                  // IconButton(
-                                  //     color: Colors.white,
-                                  //     onPressed: () {
-                                  //       Navigator.pop(context);
-                                  //     },
-                                  //     icon: Icon(Icons.arrow_back_ios_outlined)),
                                 ),
                               ),
-                              //Container(child: Icon(Icons.arrow_back_ios_outlined))),
                             ),
                           ),
                         ),
                       ),
-                      // SizedBox(
-                      //   height: 30,
-                      // ),
-                      ///Image.asset('images/logoheader.jpeg'),
-                      // SizedBox(
-                      //   height: 30,
-                      // ),
                       Container(
                         width: double.infinity,
                         decoration: BoxDecoration(
@@ -227,8 +209,6 @@ class _BookHolidayState extends State<BookHoliday> {
                                         color: Colors.black, fontSize: 12),
                                     textAlign: TextAlign.start,
                                   )),
-
-                              ///
                               Container(
                                   color: textInPutBackground,
                                   width: double.infinity,
@@ -236,7 +216,7 @@ class _BookHolidayState extends State<BookHoliday> {
                                   padding: EdgeInsets.all(10),
                                   margin: EdgeInsets.only(
                                       top: 10, left: 20, right: 20),
-                                  child: DropdownButton(
+                                  child: DropdownButton<String>(
                                     icon: Icon(Icons.arrow_drop_down),
                                     iconSize: 36,
                                     isExpanded: true,
@@ -246,78 +226,66 @@ class _BookHolidayState extends State<BookHoliday> {
                                     hint: Text('Select city'),
                                     onChanged: (value) {
                                       setState(() {
-                                        selectedLocation = value.toString();
-                                        selectedHotel = null!;
+                                        selectedLocation = value;
+                                        // selectedHotel = null;
 
-                                        // Get the location ID based on its name
                                         String locationId = locationList
                                             .firstWhere((element) =>
                                                 element['DesinationName'] ==
                                                 value)['Id']
                                             .toString();
-                                        print("fsafsaf ${locationId}");
 
-                                        // Call the method to get hotels based on location ID
-                                        getHotel(locationId);
+                                        // getHotel(locationId);
                                       });
                                     },
-                                    items: locationList?.map((item) {
-                                          return DropdownMenuItem(
-                                            value: item['DesinationName'],
-                                            child: Text(
-                                                item['DesinationName'] ?? " "),
-                                          );
-                                        })?.toList() ??
-                                        [],
+                                    items: locationList.map((item) {
+                                      return DropdownMenuItem<String>(
+                                        value: item['DesinationName'],
+                                        child:
+                                            Text(item['DesinationName'] ?? " "),
+                                      );
+                                    }).toList(),
                                   )),
-
+                              // Container(
+                              //     width: double.infinity,
+                              //     margin: EdgeInsets.only(top: 20, left: 20),
+                              //     child: Text(
+                              //       'Select Hotel',
+                              //       style: TextStyle(
+                              //           color: Colors.black, fontSize: 12),
+                              //       textAlign: TextAlign.start,
+                              //     )),
+                              // Container(
+                              //     color: textInPutBackground,
+                              //     width: double.infinity,
+                              //     height: 50,
+                              //     padding: EdgeInsets.all(10),
+                              //     margin: EdgeInsets.only(
+                              //         top: 10, left: 20, right: 20),
+                              //     child: DropdownButton<String>(
+                              //       icon: Icon(Icons.arrow_drop_down),
+                              //       iconSize: 36,
+                              //       isExpanded: true,
+                              //       value: selectedHotel,
+                              //       style: TextStyle(color: Colors.black),
+                              //       underline: Container(),
+                              //       hint: Text('Select Hotel'),
+                              //       onChanged: (value) {
+                              //         setState(() {
+                              //           selectedHotel = value;
+                              //         });
+                              //       },
+                              //       items: hotelList.map((item) {
+                              //         return DropdownMenuItem<String>(
+                              //             value: item['PlaceName'] ?? " ",
+                              //             child: Text(item['PlaceName'] ?? ""));
+                              //       }).toList(),
+                              //     )),
                               Container(
                                   width: double.infinity,
                                   margin: EdgeInsets.only(top: 20, left: 20),
                                   child: Text(
-                                    'Select Hotel',
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 12),
-                                    textAlign: TextAlign.start,
-                                  )),
-
-                              ///
-                              Container(
-                                  color: textInPutBackground,
-                                  width: double.infinity,
-                                  height: 50,
-                                  padding: EdgeInsets.all(10),
-                                  margin: EdgeInsets.only(
-                                      top: 10, left: 20, right: 20),
-                                  child: DropdownButton(
-                                    icon: Icon(Icons.arrow_drop_down),
-                                    iconSize: 36,
-                                    isExpanded: true,
-                                    value: selectedHotel,
-                                    style: TextStyle(color: Colors.black),
-                                    underline: Container(),
-                                    hint: Text('Select Hotel'),
-                                    onChanged: (value) {
-                                      setState(() {
-                                        selectedHotel = value.toString();
-                                        print(selectedHotel);
-                                      });
-                                    },
-                                    items: hotelList?.map((item) {
-                                          // Check if hotelList is not null before mapping
-
-                                          return DropdownMenuItem(
-                                              value: item['PlaceName'] ?? " ",
-                                              child: Text(
-                                                  item['PlaceName'] ?? ""));
-                                        })?.toList() ??
-                                        [],
-                                  )),
-                              Container(
-                                  width: double.infinity,
-                                  margin: EdgeInsets.only(top: 20, left: 20),
-                                  child: Text(
-                                    'Check in date',
+                                    'Check In',
                                     style: TextStyle(
                                         color: Colors.black, fontSize: 12),
                                     textAlign: TextAlign.start,
@@ -327,52 +295,103 @@ class _BookHolidayState extends State<BookHoliday> {
                                   _selectDate(context);
                                 },
                                 child: Container(
-                                    color: textInPutBackground,
-                                    width: double.infinity,
-                                    height: 50,
-                                    padding: EdgeInsets.all(10),
-                                    margin: EdgeInsets.only(
-                                        top: 10, left: 20, right: 20),
-                                    child: Text(
-                                      "${selectedDate.toLocal()}".split(' ')[0],
-                                      style: TextStyle(color: Colors.black),
-                                      textAlign: TextAlign.start,
-                                    )),
+                                  margin: EdgeInsets.only(
+                                      top: 10, left: 20, right: 20),
+                                  decoration:
+                                      BoxDecoration(color: textInPutBackground),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "${selectedDate.toLocal()}"
+                                              .split(' ')[0],
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                        Icon(Icons.calendar_today,
+                                            color: Colors.black),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
                               Container(
                                   width: double.infinity,
                                   margin: EdgeInsets.only(top: 20, left: 20),
                                   child: Text(
-                                    'No of Nights',
+                                    'Check Out',
                                     style: TextStyle(
                                         color: Colors.black, fontSize: 12),
                                     textAlign: TextAlign.start,
                                   )),
-                              Container(
-                                margin: EdgeInsets.only(
-                                    top: 10, left: 20, right: 20),
-                                decoration: BoxDecoration(
-                                    color: textInPutBackground,
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: TextFormField(
-                                  textInputAction: TextInputAction.next,
-                                  controller: _textNoOfNightsController,
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return 'This field is required';
-                                    } else {
-                                      return null;
-                                    }
-                                  },
-                                  keyboardType: TextInputType.number,
+                              GestureDetector(
+                                onTap: () {
+                                  _checkOutDate(context);
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      top: 10, left: 20, right: 20),
                                   decoration:
-                                      InputDecoration(border: InputBorder.none),
+                                      BoxDecoration(color: textInPutBackground),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(10.0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "${checkOutDate.toLocal()}"
+                                              .split(' ')[0],
+                                          style: TextStyle(color: Colors.black),
+                                        ),
+                                        Icon(Icons.calendar_month_sharp,
+                                            color: Colors.black),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
+                              // Container(
+                              //     width: double.infinity,
+                              //     margin: EdgeInsets.only(top: 20, left: 20),
+                              //     child: Text(
+                              //       'No of Nights',
+                              //       style: TextStyle(
+                              //           color: Colors.black, fontSize: 12),
+                              //       textAlign: TextAlign.start,
+                              //     )),
+                              // Container(
+                              //   margin: EdgeInsets.only(
+                              //       top: 10, left: 20, right: 20),
+                              //   decoration:
+                              //       BoxDecoration(color: textInPutBackground),
+                              //   child: TextFormField(
+                              //     keyboardType: TextInputType.number,
+                              //     controller: _textNoOfNightsController,
+                              //     style: TextStyle(
+                              //       color: Colors.black,
+                              //     ),
+                              //     cursorColor: primaryColor,
+                              //     decoration: InputDecoration(
+                              //       contentPadding:
+                              //           EdgeInsets.symmetric(horizontal: 15),
+                              //       hintText: 'Enter No Of Nights',
+                              //       hintStyle:
+                              //           TextStyle(color: Colors.grey.shade400),
+                              //       border: InputBorder.none,
+                              //     ),
+                              //     validator: (value) {
+                              //       if (value!.isEmpty) {
+                              //         return "Enter No Of Nights";
+                              //       }
+                              //     },
+                              //   ),
+                              // ),
                               Container(
                                   width: double.infinity,
-                                  margin: EdgeInsets.only(
-                                      top: 20, left: 20, right: 20),
+                                  margin: EdgeInsets.only(top: 20, left: 20),
                                   child: Text(
                                     'No of Adults',
                                     style: TextStyle(
@@ -382,30 +401,35 @@ class _BookHolidayState extends State<BookHoliday> {
                               Container(
                                 margin: EdgeInsets.only(
                                     top: 10, left: 20, right: 20),
-                                decoration: BoxDecoration(
-                                    color: textInPutBackground,
-                                    borderRadius: BorderRadius.circular(5)),
+                                decoration:
+                                    BoxDecoration(color: textInPutBackground),
                                 child: TextFormField(
-                                  textInputAction: TextInputAction.next,
+                                  keyboardType: TextInputType.number,
                                   controller: _textNoOfAdultsController,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  cursorColor: primaryColor,
+                                  decoration: InputDecoration(
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 15),
+                                    hintText: 'Enter No Of Adults',
+                                    hintStyle:
+                                        TextStyle(color: Colors.grey.shade400),
+                                    border: InputBorder.none,
+                                  ),
                                   validator: (value) {
                                     if (value!.isEmpty) {
-                                      return 'This field is required';
-                                    } else {
-                                      return null;
+                                      return "Enter No Of Adults";
                                     }
                                   },
-                                  keyboardType: TextInputType.number,
-                                  decoration:
-                                      InputDecoration(border: InputBorder.none),
                                 ),
                               ),
                               Container(
                                   width: double.infinity,
-                                  margin: EdgeInsets.only(
-                                      top: 20, left: 20, right: 20),
+                                  margin: EdgeInsets.only(top: 20, left: 20),
                                   child: Text(
-                                    'No of Children',
+                                    'No of Child',
                                     style: TextStyle(
                                         color: Colors.black, fontSize: 12),
                                     textAlign: TextAlign.start,
@@ -413,30 +437,35 @@ class _BookHolidayState extends State<BookHoliday> {
                               Container(
                                 margin: EdgeInsets.only(
                                     top: 10, left: 20, right: 20),
-                                decoration: BoxDecoration(
-                                    color: textInPutBackground,
-                                    borderRadius: BorderRadius.circular(5)),
+                                decoration:
+                                    BoxDecoration(color: textInPutBackground),
                                 child: TextFormField(
-                                  textInputAction: TextInputAction.next,
+                                  keyboardType: TextInputType.number,
                                   controller: _textNoOfChildController,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  cursorColor: primaryColor,
+                                  decoration: InputDecoration(
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 15),
+                                    hintText: 'Enter No Of Child',
+                                    hintStyle:
+                                        TextStyle(color: Colors.grey.shade400),
+                                    border: InputBorder.none,
+                                  ),
                                   validator: (value) {
                                     if (value!.isEmpty) {
-                                      return 'This field is required';
-                                    } else {
-                                      return null;
+                                      return "Enter No Of Child";
                                     }
                                   },
-                                  keyboardType: TextInputType.number,
-                                  decoration:
-                                      InputDecoration(border: InputBorder.none),
                                 ),
                               ),
                               Container(
                                   width: double.infinity,
-                                  margin: EdgeInsets.only(
-                                      top: 20, left: 20, right: 20),
+                                  margin: EdgeInsets.only(top: 20, left: 20),
                                   child: Text(
-                                    'Enter Membership Id',
+                                    'Phone Number',
                                     style: TextStyle(
                                         color: Colors.black, fontSize: 12),
                                     textAlign: TextAlign.start,
@@ -444,30 +473,90 @@ class _BookHolidayState extends State<BookHoliday> {
                               Container(
                                 margin: EdgeInsets.only(
                                     top: 10, left: 20, right: 20),
-                                decoration: BoxDecoration(
-                                    color: textInPutBackground,
-                                    borderRadius: BorderRadius.circular(5)),
+                                decoration:
+                                    BoxDecoration(color: textInPutBackground),
                                 child: TextFormField(
-                                  textInputAction: TextInputAction.done,
-                                  controller: _textMembershipIdController,
+                                  inputFormatters: [
+                                    LengthLimitingTextInputFormatter(
+                                        10), //n is maximum number of characters you want in textfield
+                                  ],
+                                  keyboardType: TextInputType.number,
+                                  //maxLength: 10,
+                                  controller: _textPhoneController,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  cursorColor: primaryColor,
+                                  decoration: InputDecoration(
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 15),
+                                    hintText: 'Enter Phone Number',
+                                    hintStyle:
+                                        TextStyle(color: Colors.grey.shade400),
+                                    border: InputBorder.none,
+                                  ),
                                   validator: (value) {
                                     if (value!.isEmpty) {
-                                      return 'This field is required';
+                                      return "Enter Phone Number";
+                                    }
+                                  },
+                                ),
+                              ),
+                              Container(
+                                  width: double.infinity,
+                                  margin: EdgeInsets.only(top: 20, left: 20),
+                                  child: Text(
+                                    'Email',
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 12),
+                                    textAlign: TextAlign.start,
+                                  )),
+                              Container(
+                                margin: EdgeInsets.only(
+                                    top: 10, left: 20, right: 20),
+                                decoration:
+                                    BoxDecoration(color: textInPutBackground),
+                                child: TextFormField(
+                                  autovalidateMode:
+                                      AutovalidateMode.onUserInteraction,
+                                  validator: (v) {
+                                    String pattern =
+                                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
+                                    RegExp regExp = new RegExp(pattern);
+                                    if (v == "") {
+                                      return "Enter Your Email";
+                                    } else if (!regExp.hasMatch(v!)) {
+                                      return 'Invalid Email Id';
                                     } else {
                                       return null;
                                     }
                                   },
-                                  keyboardType: TextInputType.text,
-                                  decoration:
-                                      InputDecoration(border: InputBorder.none),
+                                  // keyboardType: TextInputType.number,
+                                  controller: _textEmailController,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                  cursorColor: primaryColor,
+                                  decoration: InputDecoration(
+                                    contentPadding:
+                                        EdgeInsets.symmetric(horizontal: 15),
+                                    hintText: 'Enter Email Id',
+                                    hintStyle:
+                                        TextStyle(color: Colors.grey.shade400),
+                                    border: InputBorder.none,
+                                  ),
+                                  // validator: (value) {
+                                  //   if (value!.isEmpty) {
+                                  //     return "Enter Email Id";
+                                  //   }
+                                  // },
                                 ),
                               ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              GestureDetector(
-                                onTap: () {
+                              SizedBox(height: 20),
+                              ElevatedButton(
+                                onPressed: () async {
                                   if (formKey.currentState!.validate()) {
+                                    // Perform the booking process
                                     if (selectedLocation != null) {
                                       setState(() {
                                         _isLoading = true;
@@ -482,55 +571,18 @@ class _BookHolidayState extends State<BookHoliday> {
                                     }
                                   }
                                 },
-                                child: Container(
-                                  width: 150,
-                                  margin: EdgeInsets.only(bottom: 20),
-                                  child: Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: primaryColor,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5))),
-                                      width: 150,
-                                      height: 50,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                              margin: EdgeInsets.only(left: 15),
-                                              child: Text(
-                                                'Book Now',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              )),
-                                          Align(
-                                            alignment: Alignment.center,
-                                            child: Container(
-                                                width: 15,
-                                                height: 15,
-                                                margin:
-                                                    EdgeInsets.only(left: 10),
-                                                child: _isLoading
-                                                    ? CircularProgressIndicator(
-                                                        valueColor:
-                                                            AlwaysStoppedAnimation<
-                                                                    Color>(
-                                                                Colors.white),
-                                                      )
-                                                    : Container()),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
+                                child: Text('Submit'),
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: primaryColor,
+                                  minimumSize: Size(size.width * 0.8, 50),
                                 ),
-                              )
+                              ),
+                              SizedBox(height: 20),
                             ],
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -541,14 +593,17 @@ class _BookHolidayState extends State<BookHoliday> {
 
   void bookHoliday(BuildContext context) async {
     Map<String, String> data = {
-      'City': selectedLocation,
-      'PlaceName': selectedHotel,
-      'NoofNights': _textNoOfNightsController.text.toString(),
+      'UserId': userId.toString(),
+      'City': selectedLocation!,
+      // 'PlaceName': selectedHotel!,
+      // 'NoofNights': _textNoOfNightsController.text.toString(),
       'NoofAdults': _textNoOfAdultsController.text.toString(),
       'Noofchild': _textNoOfChildController.text.toString(),
       'CheckinDate': selectedDate.toString(),
-      'UserId': userId.toString(),
-      'MemberShipId': _textMembershipIdController.text.toString(),
+      'CheckOutDate': checkOutDate.toString(),
+      'Phone': _textPhoneController.text.toString(),
+      'Email': _textEmailController.text.toString(),
+      // 'MemberShipId': _textMembershipIdController.text.toString(),
     };
 
     String url = "https://fcclub.co.in/api/BookHoliday/GetHoliday";
@@ -577,7 +632,7 @@ class _BookHolidayState extends State<BookHoliday> {
       }
     } else {
       Fluttertoast.showToast(
-        msg: "Something went wrong",
+        msg: "Something went wronggggg",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
@@ -585,7 +640,12 @@ class _BookHolidayState extends State<BookHoliday> {
     }
   }
 
-  // void bookHoliday(BuildContext context) async {
+  Future<void> getUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    userId = prefs.getInt('Id') ?? 0;
+  }
+
+// void bookHoliday(BuildContext context) async {
   //   Map data = {
   //     'City': selectedLocation,
   //     'PlaceName': selectedHotel,
@@ -627,13 +687,6 @@ class _BookHolidayState extends State<BookHoliday> {
   //         timeInSecForIosWeb: 1);
   //   }
   // }
-
-  void getUserId() async {
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    setState(() {
-      userId = sharedPreferences.getInt("userId")!;
-    });
-  }
 
   // void getLocationId() async {
   //   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();

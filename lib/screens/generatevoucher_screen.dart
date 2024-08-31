@@ -1,7 +1,8 @@
 import 'dart:io';
 
-import 'package:esys_flutter_share_plus/esys_flutter_share_plus.dart';
+// import 'package:esys_flutter_share_plus/esys_flutter_share_plus.dart';
 import 'package:fch_club_new24/screens/voucher_screen.dart';
+import 'package:fch_club_new24/utils/datasource.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../models/VoucherData.dart';
 
@@ -58,7 +60,7 @@ class GenerateVoucherPageState extends State<GenerateVoucherPage> {
                           flex: 1,
                           child: Container(
                               alignment: Alignment.topLeft,
-                              width: 200,
+                              width: 160,
                               child: Image.asset('images/ribbon.png')),
                         ),
                         Expanded(
@@ -258,7 +260,7 @@ class GenerateVoucherPageState extends State<GenerateVoucherPage> {
                             child: Text(
                               'Date of issue:' +
                                   '  ' +
-                                  widget.voucher!.issueDate,
+                                  widget.voucher!.issueDate.substring(0, 10),
                               style: TextStyle(
                                   fontSize: 14, fontStyle: FontStyle.italic),
                             ),
@@ -307,7 +309,7 @@ class GenerateVoucherPageState extends State<GenerateVoucherPage> {
                           alignment: Alignment.centerLeft,
                           child: Container(
                             child: Text(
-                              '3. One month advance notice is required to avail this voucher . Fill in three choices of your Vacation and mail this voucher to voucher@futurechoiceclub.com',
+                              '3. One month advance notice is required to avail this voucher . Fill in three choices of your Vacation and mail this voucher to voucher@futurechoicehospitality.com',
                               style: TextStyle(fontSize: 12),
                             ),
                           ),
@@ -342,9 +344,19 @@ class GenerateVoucherPageState extends State<GenerateVoucherPage> {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Container(
-                            margin: EdgeInsets.only(bottom: 20),
+                            //margin: EdgeInsets.only(bottom: 20),
                             child: Text(
                               '7. This voucher cannot be clubbed with any other offer and Voucher bearer can redeem only one voucher at a time .',
+                              style: TextStyle(fontSize: 12),
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            margin: EdgeInsets.only(bottom: 20),
+                            child: Text(
+                              '8. Voucher not changeable in cash .',
                               style: TextStyle(fontSize: 12),
                             ),
                           ),
@@ -375,27 +387,21 @@ class GenerateVoucherPageState extends State<GenerateVoucherPage> {
                 .capture(delay: Duration(milliseconds: 10))
                 .then((capturedImage) async {
               ShowCapturedWidget(context, capturedImage!);
+              _takeScreenshotandShare1();
             }).catchError((onError) {
               print(onError);
             });
-            _takeScreenshotandShare1();
           },
-          label: const Text('Share'),
+          label: const Text(
+            'Share',
+            style: TextStyle(color: Colors.white),
+          ),
           icon: const Icon(
             Icons.share,
             color: Colors.white,
             size: 25,
           ),
           backgroundColor: Colors.orange,
-          // child:
-          //     Icon(
-          //       Icons.share,
-          //       color: Colors.white,
-          //       size: 25,
-          //     ),
-          //
-          // backgroundColor: Colors.orange,
-          // elevation: 5,
         ),
         SizedBox(
           height: 10,
@@ -434,9 +440,52 @@ class GenerateVoucherPageState extends State<GenerateVoucherPage> {
   //       DeviceOrientation.landscapeRight,
   //     ]);
 
-  ///TODO: corrected by Kumar prince. abhshek bro.......
-
+  ///TODO: corrected by sonali . abhshek bro.......
   _takeScreenshotandShare1() async {
+    try {
+      // Capture the screenshot
+      Uint8List? image = await _controller.capture(
+          delay: Duration(milliseconds: 10), pixelRatio: 2.0);
+
+      if (image != null) {
+        String? directory;
+        // Get the external storage directory (publicly accessible)
+        if (Platform.isAndroid) {
+          directory = (await getApplicationDocumentsDirectory())?.path;
+        } else if (Platform.isIOS) {
+          directory = (await getApplicationDocumentsDirectory()).path;
+        }
+        //final directory = (await getExternalStorageDirectory())?.path;
+
+        if (directory != null) {
+          // Create a file path
+          String filePath = '$directory/screenshot.png';
+
+          // Write the image data to a file
+          File imgFile = File(filePath);
+          await imgFile.writeAsBytes(image);
+
+          print("File Saved to $filePath");
+
+          // Share the file using flutter_share
+          await Share.shareFiles([filePath], text: "Gift Voucher");
+          // await FlutterShare.shareFile(
+          //   title: 'Future Choice Hospitality',
+          //   text: 'Gift Voucher',
+          //   filePath: filePath,
+          // );
+        } else {
+          print("Error: External storage directory not found");
+        }
+      } else {
+        print("Image capture failed");
+      }
+    } catch (e) {
+      print("onError: $e");
+    }
+  }
+
+  _takeScreenshotandShare11() async {
     _imageFile = null; // This is now valid
     _controller
         .capture(delay: Duration(milliseconds: 10), pixelRatio: 2.0)
@@ -447,12 +496,14 @@ class GenerateVoucherPageState extends State<GenerateVoucherPage> {
       final directory = (await getApplicationDocumentsDirectory()).path;
       Uint8List pngBytes =
           _imageFile!.readAsBytesSync(); // Use ! to assert non-null
-      File imgFile = new File('$directory/screenshot.png');
+      String filePath = '$directory/screenshot.png';
+      File imgFile = new File(filePath);
       imgFile.writeAsBytes(pngBytes);
       print("File Saved to Gallery");
-      await Share.file('Anupam', 'screenshot.png', pngBytes, 'image/png');
+      // await Share.shareFiles(filePath);
+      // await Share.file('Anupam', 'screenshot.png', pngBytes, 'image/png');
     }).catchError((onError) {
-      print(onError);
+      print("onError:${onError}");
     });
   }
 
@@ -517,20 +568,26 @@ class GenerateVoucherPageState extends State<GenerateVoucherPage> {
   //   pdfFile.writeAsBytesSync(pdf.save());
   // }
 
-  Future<dynamic> ShowCapturedWidget(
-      BuildContext context, Uint8List capturedImage) {
-    return showDialog(
-      useSafeArea: false,
-      context: context,
-      builder: (context) => Scaffold(
-        appBar: AppBar(
-          title: Text("Captured widget screenshot"),
-        ),
-        body: Center(
+}
+
+Future<dynamic> ShowCapturedWidget(
+    BuildContext context, Uint8List capturedImage) {
+  // SystemChrome.setPreferredOrientations(
+  //     [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  return showDialog(
+    useSafeArea: false,
+    context: context,
+    builder: (context) => Scaffold(
+      appBar: AppBar(
+        title: Text("Gift Voucher"),
+        backgroundColor: primaryColor,
+      ),
+      body: SafeArea(
+        child: Center(
             child: capturedImage != null
                 ? Image.memory(capturedImage)
                 : Container()),
       ),
-    );
-  }
+    ),
+  );
 }

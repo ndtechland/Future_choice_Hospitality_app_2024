@@ -28,8 +28,8 @@ class ContactUs extends StatelessWidget {
               height: 10,
             ),
             Text(
-              'Info@futurechoiceclub.com',
-              style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+              'reservation@futurechoicehospitality.com',
+              style: TextStyle(fontSize: 18, color: Colors.grey[700],fontWeight: FontWeight.w600),
             ),
             SizedBox(
               height: 20,
@@ -43,14 +43,14 @@ class ContactUs extends StatelessWidget {
             ),
             Text(
               '0120-4546038',
-              style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+              style: TextStyle(fontSize: 18, color: Colors.grey[700],fontWeight: FontWeight.w600),
             ),
             SizedBox(
               height: 20,
             ),
             GestureDetector(
                 onTap: () {
-                  urlLauncher.launch('mailto://Info@futurechoiceclub.com');
+                  urlLauncher.launch('mailto:reservation@futurechoicehospitality.com');
                 },
                 child: Image.asset(
                   'images/email.png',
@@ -62,7 +62,7 @@ class ContactUs extends StatelessWidget {
             ),
             GestureDetector(
                 onTap: () {
-                  urlLauncher.launch('tel://1234567890');
+                  urlLauncher.launch('tel://0120-4546038');
                 },
                 child: Image.asset(
                   'images/call_now.png',

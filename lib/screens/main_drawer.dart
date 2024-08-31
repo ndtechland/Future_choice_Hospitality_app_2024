@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_share/flutter_share.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -129,20 +132,20 @@ class _MainDrawerState extends State<MainDrawer> {
               ),
               title: Text('E.M.I Details'),
             ),
-            ListTile(
-              onTap: () {
-                Navigator.popAndPushNamed(context, '/amc_screen');
-              },
-              leading: Image.asset(
-                'images/contract.png',
-                width: 30,
-                height: 30,
-              ),
-              title: Text(
-                'AMC',
-                style: TextStyle(fontSize: 14),
-              ),
-            ),
+            // ListTile(
+            //   onTap: () {
+            //     Navigator.popAndPushNamed(context, '/amc_screen');
+            //   },
+            //   leading: Image.asset(
+            //     'images/contract.png',
+            //     width: 30,
+            //     height: 30,
+            //   ),
+            //   title: Text(
+            //     'AMC',
+            //     style: TextStyle(fontSize: 14),
+            //   ),
+            // ),
             ListTile(
               onTap: () {
                 Navigator.popAndPushNamed(context, '/book_holiday');
@@ -172,22 +175,25 @@ class _MainDrawerState extends State<MainDrawer> {
               ),
             ),
             ListTile(
+              onTap: () {
+                share();
+              },
               leading: Icon(Icons.share, size: 28),
               title: Text(
                 'Refer a friend',
                 style: TextStyle(fontSize: 14),
               ),
             ),
-            ListTile(
-              onTap: () {
-                Navigator.popAndPushNamed(context, '/change_password');
-              },
-              leading: Icon(Icons.lock, size: 30),
-              title: Text(
-                'Change Password',
-                style: TextStyle(fontSize: 14),
-              ),
-            ),
+            // ListTile(
+            //   onTap: () {
+            //     Navigator.popAndPushNamed(context, '/change_password');
+            //   },
+            //   leading: Icon(Icons.lock, size: 30),
+            //   title: Text(
+            //     'Change Password',
+            //     style: TextStyle(fontSize: 14),
+            //   ),
+            // ),
             ListTile(
               onTap: () {
                 Navigator.popAndPushNamed(context, '/contact_us');
@@ -247,6 +253,46 @@ class _MainDrawerState extends State<MainDrawer> {
                   },
                 );
               },
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.delete,
+                size: 30,
+              ),
+              title: Text(
+                'Delete Account',
+                style: TextStyle(fontSize: 14),
+              ),
+              onTap: () {
+                //showBottomSheet(context);
+                showDialog<void>(
+                  context: context,
+                  // false = user must tap button, true = tap outside dialog
+                  builder: (BuildContext dialogContext) {
+                    return AlertDialog(
+                      title: Text('Delete Account'),
+                      content: Text(
+                          'Are you sure you want to delete your account ?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: Text('No'),
+                          onPressed: () {
+                            Navigator.of(dialogContext)
+                                .pop(); // Dismiss alert dialog
+                          },
+                        ),
+                        TextButton(
+                          child: Text('Yes'),
+                          onPressed: () {
+                            Navigator.of(dialogContext)
+                                .pop(); // Dismiss alert dialog
+                          },
+                        )
+                      ],
+                    );
+                  },
+                );
+              },
             )
           ],
         ),
@@ -269,8 +315,26 @@ class _MainDrawerState extends State<MainDrawer> {
   }
 }
 
+Future<void> share() async {
+  String? linkUrl;
+  if (Platform.isAndroid) {
+    linkUrl =
+        'https://play.google.com/store/apps/details?id=com.ndtechland.fch.fch_club_new24';
+  } else if (Platform.isIOS) {
+    linkUrl =
+        'https://apps.apple.com/us/app/future-choice-hospitality/id1590494810';
+  }
+
+  await FlutterShare.share(
+      title: 'Future Choice Hospitality',
+      text: 'Hi, this is the Future Choice Hospitality App link.',
+      linkUrl: linkUrl ?? '',
+      chooserTitle: 'Future Choice Hospitality');
+}
+
 void logOutUser(BuildContext context) async {
-  Navigator.pushNamedAndRemoveUntil(context, "/login_screen", (r) => false);
+  Navigator.pushNamedAndRemoveUntil(
+      context, "/memberlogin_screen", (r) => false);
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   sharedPreferences.clear();
 }

@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
         //backgroundColor: Color(oxFFC6600),
         title: Text(
           'Future Choice Hospitality',
-          style: TextStyle(color: Colors.white, fontSize: 16),
+          style: TextStyle(color: Colors.white, fontSize: 18,fontWeight: FontWeight.w600),
         ),
         iconTheme: IconThemeData(color: Colors.white),
       ),

@@ -19,6 +19,7 @@ import 'package:fch_club_new24/screens/home_screen.dart';
 import 'package:fch_club_new24/screens/login_screen.dart';
 import 'package:fch_club_new24/screens/member_screen.dart';
 import 'package:fch_club_new24/screens/payment_history.dart';
+import 'package:fch_club_new24/screens/phone_screen.dart';
 import 'package:fch_club_new24/screens/pre_wedding_screen.dart';
 import 'package:fch_club_new24/screens/profile_screen.dart';
 import 'package:fch_club_new24/screens/splash_screen.dart';
@@ -28,6 +29,8 @@ import 'package:fch_club_new24/screens/voucherregister_screen.dart';
 import 'package:fch_club_new24/utils/datasource.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Override for handling self-signed certificates
 class MyHttpOverrides extends HttpOverrides {
@@ -44,10 +47,13 @@ class MyHttpOverrides extends HttpOverrides {
 void main() async {
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
+  await SharedPreferences.getInstance();
+  await GetStorage.init();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
   //bool isLoggedIn = await checkLoginStatus();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -59,6 +65,7 @@ void main() async {
       '/voucherlogin_screen': (ctx) => VoucherLoginPage(),
       '/voucherregister_screen': (ctx) => VoucherRegisterPage(),
       '/generatevoucher_screen': (ctx) => GenerateVoucherPage(),
+      '/phone_screen': (ctx) => PhoneScreen(),
 
       '/login_screen': (ctx) => LoginPage(),
       '/home_screen': (ctx) => HomePage(),
@@ -84,7 +91,7 @@ void main() async {
   ));
 }
 
-// kumar prince........1 may  2024 after dropdown changed..latest
+// kumar prince........29 August  2024 after dropdown changed..latest
 /// 2024..this is original code for development...fch
 ///todo: kumar prince.......again .23 august 2024  created new  it's working ios as well as android also.
 ///latest new

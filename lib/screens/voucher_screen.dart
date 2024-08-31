@@ -50,7 +50,13 @@ class _VoucherLoginPageState extends State<VoucherLoginPage> {
               builder: (context) =>
                   GenerateMovieVoucherPage(voucher: widget.voucher!)));
         } else {
-          Navigator.popAndPushNamed(context, '/voucherregister_screen');
+          _isLoading
+              ? CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                )
+              :
+              // await Future.delayed(Duration(seconds: 2));
+              Navigator.popAndPushNamed(context, '/voucherregister_screen');
         }
       } else {
         Fluttertoast.showToast(
@@ -118,7 +124,7 @@ class _VoucherLoginPageState extends State<VoucherLoginPage> {
                           return null;
                         }
                       },
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Password',

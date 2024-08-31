@@ -16,12 +16,12 @@ class EmiDetails extends StatefulWidget {
 }
 
 class _EmiDetailsState extends State<EmiDetails> {
-  late List listProfileData;
+   List listProfileData=[];
   final _razorPay = Razorpay();
-  late int userId;
+   int? userId;
   bool isLoading = true;
-  late List dataFinal;
-  late int emiId;
+   List dataFinal=[];
+   int? emiId;
   void getProfileData() async {
     var endPointUrl = "https://fcclub.co.in/api/Myprofileapi/MyProfileGet";
     //print(userId.toString());
@@ -58,6 +58,7 @@ class _EmiDetailsState extends State<EmiDetails> {
     String queryString = Uri(queryParameters: queryParameter).query;
     var requestUrl = endpointUrl + "?" + queryString;
     http.Response response = await http.get(Uri.parse(requestUrl));
+    print("rUrl:$requestUrl");
     if (response.statusCode == 200) {
       Map responseBody = json.decode(response.body);
       if (responseBody['Status'] == 1) {
@@ -94,13 +95,13 @@ class _EmiDetailsState extends State<EmiDetails> {
     Size size = MediaQuery.of(context).size;
 
     return Scaffold(
-      backgroundColor: Colors.blue.shade700,
+    //  backgroundColor: Colors.blue.shade700,
       appBar: AppBar(
         backgroundColor: primaryColor,
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
           'EMI Details',
-          style: TextStyle(color: Colors.white, fontSize: 16),
+          style: TextStyle(color: Colors.white, fontSize: 18,fontWeight: FontWeight.w600),
         ),
       ),
       body: dataFinal == null
@@ -194,13 +195,13 @@ class _EmiDetailsState extends State<EmiDetails> {
                                       "    ₹ ${dataFinal[index]['InstallmentAmount'].toString()}",
                                       //  +
                                       // " ₹",
-                                      style: TextStyle(fontSize: 12),
+                                      style: TextStyle(fontSize: 12,fontWeight: FontWeight.w600),
                                     )),
                                     Expanded(
                                       child: Text(
                                           dataFinal[index]['InstallmentDate']
                                               .toString(),
-                                          style: TextStyle(fontSize: 12)),
+                                          style: TextStyle(fontSize: 12,fontWeight: FontWeight.w600)),
                                     ),
                                     Expanded(
                                       child: dataFinal[index]['IsPaid']
@@ -208,17 +209,16 @@ class _EmiDetailsState extends State<EmiDetails> {
                                               'Paid',
                                               style: TextStyle(
                                                   fontSize: 12,
-                                                  color: Colors.green),
+                                                  color: Colors.green,fontWeight: FontWeight.w600),
                                             )
                                           : Text('Pending',
                                               style: TextStyle(
                                                   fontSize: 12,
-                                                  color: Colors.red)),
+                                                  color: Colors.red,fontWeight: FontWeight.w600)),
                                     ),
                                     Expanded(
-                                        child: Visibility(
-                                      visible: !dataFinal[index]['IsPaid'],
-                                      child: GestureDetector(
+                                       child :!dataFinal[index]['IsPaid']
+                                      ? GestureDetector(
                                         onTap: () {
                                           setState(() {
                                             emiId = dataFinal[index]['Id'];
@@ -241,8 +241,20 @@ class _EmiDetailsState extends State<EmiDetails> {
                                                   fontSize: 13,
                                                   color: Colors.white),
                                             )),
-                                      ),
-                                    )),
+                                      ):Container(
+                                           padding: EdgeInsets.all(5),
+                                           decoration: BoxDecoration(
+                                               color: primaryColor,
+                                               borderRadius:
+                                               BorderRadius.circular(5)),
+                                           child: Text(
+                                             'Paid',
+                                             textAlign: TextAlign.center,
+                                             style: TextStyle(
+                                                 fontSize: 13,
+                                                 color: Colors.white),
+                                           )),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -257,7 +269,7 @@ class _EmiDetailsState extends State<EmiDetails> {
   void getUserId() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
-      userId = sharedPreferences.getInt("userId")!;
+      userId = sharedPreferences.getInt("Id");
     });
 
     getEmiDetails();

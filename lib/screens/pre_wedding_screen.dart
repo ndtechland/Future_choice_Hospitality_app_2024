@@ -12,7 +12,7 @@ class PreWeddingScreen extends StatefulWidget {
 }
 
 class _PreWeddingScreenState extends State<PreWeddingScreen> {
-  late List _listImages;
+   List _listImages=[];
   Future getPreWeddingImages() async {
     http.Response response = await http
         .get(Uri.parse('https://fcclub.co.in/api/preWeddingapi/preWedding'));
@@ -36,7 +36,7 @@ class _PreWeddingScreenState extends State<PreWeddingScreen> {
           backgroundColor: primaryColor,
           title: Text(
             'Pre Wedding',
-            style: TextStyle(color: Colors.white, fontSize: 16),
+            style: TextStyle(color: Colors.white, fontSize: 18,fontWeight: FontWeight.w600),
           ),
           iconTheme: IconThemeData(color: Colors.white),
         ),

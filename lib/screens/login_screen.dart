@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:another_flushbar/flushbar.dart';
+import 'package:fch_club_new24/screens/phone_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -45,7 +46,8 @@ class _LoginPageState extends State<LoginPage> {
             timeInSecForIosWeb: 1);
         setLoginStatus(true, responseData['User_Id'], responseData['Fullname'],
             responseData['Email']);
-        Navigator.popAndPushNamed(context, '/home_screen');
+        Navigator.push(context, MaterialPageRoute(builder: (context)=>PhoneScreen()));
+       // Navigator.popAndPushNamed(context, '/home_screen');
       } else {
         Fluttertoast.showToast(
             msg: "Incorrect username or password",
@@ -162,6 +164,28 @@ class _LoginPageState extends State<LoginPage> {
                                   BorderSide(width: 1, color: primaryColor))),
                     ),
                   ),
+                  // SizedBox(
+                  //   height: 3,
+                  // ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/forgot_password');
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(bottom: 20, top: 10),
+                          child: Text(
+                            'Forgot Password?',
+                            style: TextStyle(
+                                fontSize: 12, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   SizedBox(
                     height: 20,
                   ),
@@ -176,7 +200,7 @@ class _LoginPageState extends State<LoginPage> {
                       } else {}
                     },
                     child: Align(
-                      alignment: Alignment.centerRight,
+                      alignment: Alignment.center,
                       child: Container(
                         decoration: BoxDecoration(
                             color: primaryColor,
@@ -190,7 +214,7 @@ class _LoginPageState extends State<LoginPage> {
                                 margin: EdgeInsets.only(left: 15),
                                 child: Text(
                                   'Login',
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600,fontSize: 18),
                                 )),
                             Align(
                               alignment: Alignment.center,
@@ -211,22 +235,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, '/forgot_password');
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(bottom: 20, top: 10),
-                        child: Text(
-                          'Forgot Password?',
-                          style: TextStyle(
-                              fontSize: 12, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  )
+
                 ],
               ),
             ),

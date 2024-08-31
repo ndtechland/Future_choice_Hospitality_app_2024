@@ -9,9 +9,10 @@ class AboutUs extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryColor,
+        centerTitle: true,
         title: Text(
           'About Us',
-          style: TextStyle(color: Colors.white, fontSize: 16),
+          style: TextStyle(color: Colors.white, fontSize: 18,fontWeight: FontWeight.w600),
         ),
         iconTheme: IconThemeData(color: Colors.white),
       ),
@@ -25,7 +26,7 @@ class AboutUs extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'About us ',
-                    style: TextStyle(color: primaryColor, fontSize: 20),
+                    style: TextStyle(color: primaryColor, fontSize: 20,fontWeight: FontWeight.w600),
                   )),
               SizedBox(
                 height: 10,

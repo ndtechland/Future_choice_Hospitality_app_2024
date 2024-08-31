@@ -12,13 +12,20 @@ class HotelDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
 
+    // Ensure that all the fields used are non-nullable or provide default values
+    final imageUrl = LOCATION_IMAGE_BASE_URL + (resorts.imageName ?? 'default_image.jpg');
+    final placeName = resorts.placeName ?? 'No Place Name';
+    final description = resorts.description ?? 'No Description';
+
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(onPressed: (){Navigator.pop(context);},icon: Icon(Icons.arrow_back,color: Colors.white,),),
         backgroundColor: primaryColor,
         title: Text(
-          resorts.desinationName,
+          resorts.desinationName ?? 'No Destination Name',
           style: GoogleFonts.roboto(
-              fontSize: size.height * 0.02, fontWeight: FontWeight.bold),
+              fontSize: size.height * 0.02, fontWeight: FontWeight.bold,
+          color: Colors.white),
         ),
       ),
       body: Column(
@@ -28,15 +35,15 @@ class HotelDetails extends StatelessWidget {
             width: size.width,
             decoration: BoxDecoration(
                 image: DecorationImage(
-              image: NetworkImage(LOCATION_IMAGE_BASE_URL + resorts.image),
-              fit: BoxFit.fill,
-            )),
+                  image: NetworkImage(imageUrl),
+                  fit: BoxFit.fill,
+                )),
             child: Padding(
               padding: const EdgeInsets.all(6.0),
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Text(
-                  resorts.placeName,
+                  placeName,
                   style: GoogleFonts.aBeeZee(
                       backgroundColor: Colors.blueGrey,
                       fontSize: size.height * 0.014,
@@ -50,7 +57,7 @@ class HotelDetails extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(3.0),
-            child: Text(resorts.description),
+            child: Text(description),
           ),
         ],
       ),

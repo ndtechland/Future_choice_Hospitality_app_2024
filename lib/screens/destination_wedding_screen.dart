@@ -12,7 +12,7 @@ class DestinationWedding extends StatefulWidget {
 }
 
 class _DestinationWeddingState extends State<DestinationWedding> {
-  late List _listImages;
+   List _listImages=[];
   Future getDestinationWeddingImages() async {
     http.Response response = await http.get(
       Uri.parse(
@@ -46,11 +46,11 @@ class _DestinationWeddingState extends State<DestinationWedding> {
           backgroundColor: primaryColor,
           title: Text(
             'Destination Wedding',
-            style: TextStyle(color: Colors.white, fontSize: 16),
+            style: TextStyle(color: Colors.white, fontSize: 18,fontWeight: FontWeight.w600),
           ),
           iconTheme: IconThemeData(color: Colors.white),
         ),
-        body: _listImages == null
+        body: _listImages.isEmpty
             ? Center(
                 child: CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(primaryColor),

@@ -39,16 +39,15 @@ class _VoucherRegisterPageState extends State<VoucherRegisterPage> {
   TextEditingController _textIssuedByController = TextEditingController();
   TextEditingController dateCtl = TextEditingController();
   var _currencies = [
-    "Goa",
-    "Kerala",
-    "Ooty",
-    "Jaisalmer",
+    "Jim corbett",
     "Manali",
-    "Bankok",
-    "Bali",
-    "Vietnam",
-    "Srilanka",
-    "Nepal",
+    "Jaipur",
+    "Agra",
+    "Goa",
+    "Thailand",
+
+    // "Srilanka",
+    // "Nepal",
   ];
 
   void loginUser(String name, String phone, String email, String preLoc1,
@@ -72,7 +71,9 @@ class _VoucherRegisterPageState extends State<VoucherRegisterPage> {
           'ChoiceDate3': _currentSelectedValue2,
           'IsChecked': checkedValue.toString(),
         });
-    print(response.body);
+    print("response.body:${response.body}");
+    //print("DFGFD: ${voucher.sequenceNo}");
+
     if (response.statusCode == 200) {
       Map responseData = json.decode(response.body);
       setState(() {
@@ -211,9 +212,13 @@ class _VoucherRegisterPageState extends State<VoucherRegisterPage> {
                     padding: const EdgeInsets.only(left: 8, right: 8),
                     child: TextFormField(
                       controller: _textEmailController,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Required';
+                      validator: (v) {
+                        String pattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
+                        RegExp regExp = new RegExp(pattern);
+                        if (v == "") {
+                          return "Enter Your Email";
+                        } else if (!regExp.hasMatch(v!)) {
+                          return 'Invalid Email Id';
                         } else {
                           return null;
                         }
@@ -403,6 +408,7 @@ class _VoucherRegisterPageState extends State<VoucherRegisterPage> {
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Date of issue',
+                        suffixIcon: Icon(Icons.calendar_month),
                         enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(4)),
                             borderSide:

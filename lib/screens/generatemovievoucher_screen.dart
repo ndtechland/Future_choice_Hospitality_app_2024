@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:esys_flutter_share_plus/esys_flutter_share_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -419,10 +418,16 @@ class GenerateMovieVoucherPageState extends State<GenerateMovieVoucherPage> {
       final directory = (await getApplicationDocumentsDirectory()).path;
       Uint8List pngBytes =
           _imageFile!.readAsBytesSync(); // Use ! to assert non-null
-      File imgFile = new File('$directory/screenshot.png');
+      String filePath = '$directory/screenshot.png';
+      File imgFile = new File(filePath);
       imgFile.writeAsBytes(pngBytes);
       print("File Saved to Gallery");
-      await Share.file('Anupam', 'screenshot.png', pngBytes, 'image/png');
+      await FlutterShare.shareFile(
+        title: "Hello!",
+        text: "Gift Voucher",
+        filePath: filePath,
+      );
+      //await Share.file('Anupam', 'screenshot.png', pngBytes, 'image/png');
     }).catchError((onError) {
       print(onError);
     });

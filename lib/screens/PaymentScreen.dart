@@ -18,8 +18,8 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   final _razorpay = Razorpay();
-  late List listProfileData;
-  late int userId;
+   List listProfileData=[];
+   int? userId;
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController amountController = TextEditingController();
@@ -79,20 +79,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
         title: Text(
           'Payment Options',
           style: GoogleFonts.poppins(
-              color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+              color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
         ),
         iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Container(
         decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage(
-                  "images/paymentbackground.jpg",
-                  //"https://images.unsplash.com/photo-1571715268998-d6e79bed5fc9?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEyfHx8ZW58MHx8fHx8"
-                  //"https://images.unsplash.com/photo-1599202875854-23b7cd490ff4?q=80&w=2382&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                  // "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?q=80&w=2187&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-                ),
-                fit: BoxFit.fill)),
+            // image: DecorationImage(
+            //     image: AssetImage(
+            //       "images/paymentbackground.jpg",
+            //       //"https://images.unsplash.com/photo-1571715268998-d6e79bed5fc9?w=700&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDEyfHx8ZW58MHx8fHx8"
+            //       //"https://images.unsplash.com/photo-1599202875854-23b7cd490ff4?q=80&w=2382&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            //       // "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?q=80&w=2187&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            //     ),
+            //     fit: BoxFit.fill)
+        ),
         margin: EdgeInsets.only(top: 0),
         width: double.infinity,
         height: double.infinity,
@@ -209,7 +210,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             Image.asset(
                               'images/emi.png',
                               height: 150,
-                              width: 150,
+                              width: 140,
                               fit: BoxFit.contain,
                             ),
                             SizedBox(
@@ -243,7 +244,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             Image.asset(
                               'images/other.png',
                               height: 150,
-                              width: 150,
+                              width: 130,
                               fit: BoxFit.contain,
                             ),
                             SizedBox(
@@ -285,7 +286,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   void getUserId() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
-      userId = sharedPreferences.getInt("userId")!;
+      userId = sharedPreferences.getInt("Id");
       print("profile${userId}");
     });
     getProfileData();

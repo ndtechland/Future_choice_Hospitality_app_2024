@@ -25,7 +25,7 @@ class ThanksDialog extends StatelessWidget {
                   height: 30,
                 ),
                 Text(
-                  'Dear member your booking request is forwarded to concerned department and you will get updated soon at your registered number or \n mail Id. \n Feel free to contact our customer care at 9654282869 for any assistance',
+                  'Dear member your booking request is forwarded to concerned department and you will get updated soon at your registered number or \n mail Id: reservation@futurechoicehospitality.com \n Feel free to contact our customer care at 9654282869 for any assistance',
                   style: TextStyle(color: Colors.grey[600], fontSize: 13),
                   textAlign: TextAlign.center,
                 ),
