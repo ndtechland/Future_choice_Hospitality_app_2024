@@ -1,8 +1,10 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+
 import '../utils/datasource.dart';
 import '../widgets/vacations_list.dart';
 
@@ -26,6 +28,7 @@ class _VacationsScreenState extends State<VacationsScreen> {
 
     var endPointUrl = "https://fcclub.co.in/api/BookHoliday/GetAllTaner";
     String requestUrl = "$endPointUrl?userId=$userId";
+    //"$userId";
     print("requestUrl: $requestUrl");
 
     try {
@@ -62,9 +65,11 @@ class _VacationsScreenState extends State<VacationsScreen> {
           timeInSecForIosWeb: 1);
     }
   }
+
   Future<void> debugSharedPreferences() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    String mobileNumber = sharedPreferences.getString("mobileNumber") ?? 'Not found';
+    String mobileNumber =
+        sharedPreferences.getString("mobileNumber") ?? 'Not found';
     bool isLoggedIn = sharedPreferences.getBool("isLoggedIn") ?? false;
     int userId = sharedPreferences.getInt("Id") ?? -1;
     print("Debug SharedPreferences:");
@@ -72,6 +77,7 @@ class _VacationsScreenState extends State<VacationsScreen> {
     print("Is Logged In: $isLoggedIn");
     print("User ID: $userId");
   }
+
   Future<void> getUserId() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
@@ -94,29 +100,33 @@ class _VacationsScreenState extends State<VacationsScreen> {
         centerTitle: true,
         title: Text(
           'My Vacations',
-          style: TextStyle(color: Colors.white, fontSize: 18,fontWeight: FontWeight.w600),
+          style: TextStyle(
+              color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
         ),
       ),
       body: vacationsData.isEmpty
           ? Center(
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-        ),
-      )
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
+              ),
+            )
           : Container(
-        child: ListView.builder(
-          itemCount: int.parse(vacationsData['Tenure'] ?? '0'),
-          itemBuilder: (context, index) {
-            return VacationListItem(
-              index,
-              getDate(vacationsData['DOjoining'] ?? ''),
-              int.parse(vacationsData['Tenure'] ?? '0'),
-              vacationsData['Days'] ?? '',
-              vacationsData['Nights'] ?? '',
-            );
-          },
-        ),
-      ),
+              child: ListView.builder(
+                itemCount:
+                    int.tryParse(vacationsData['Tenure']?.toString() ?? '0') ??
+                        0,
+                itemBuilder: (context, index) {
+                  return VacationListItem(
+                    index,
+                    getDate(vacationsData['DOjoining'] ?? ''),
+                    int.tryParse(vacationsData['Tenure']?.toString() ?? '0') ??
+                        0, // Handle null or invalid values here
+                    vacationsData['Days'] ?? '',
+                    vacationsData['Nights'] ?? '',
+                  );
+                },
+              ),
+            ),
     );
   }
 
@@ -184,6 +194,7 @@ class _VacationsScreenState extends State<VacationsScreen> {
 
     return dateList[0] + " " + finalMonth + " " + dateList[2];
   }
+
   Future<int> checkLoginStatus() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     int userId = sharedPreferences.getInt("Id") ?? 0;

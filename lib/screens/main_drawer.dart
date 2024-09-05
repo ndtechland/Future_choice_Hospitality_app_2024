@@ -322,7 +322,8 @@ Future<void> share() async {
         'https://play.google.com/store/apps/details?id=com.ndtechland.fch.fch_club_new24';
   } else if (Platform.isIOS) {
     linkUrl =
-        'https://apps.apple.com/us/app/future-choice-hospitality/id1590494810';
+        'https://apps.apple.com/us/app/future-choice-hospitality/id6670314847';
+    // 'https://apps.apple.com/us/app/future-choice-hospitality/id1590494810';
   }
 
   await FlutterShare.share(
